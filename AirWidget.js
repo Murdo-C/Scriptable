@@ -46,8 +46,8 @@ var hours = date.getHours();
 var minutes = date.getMinutes();
 var seconds = date.getSeconds();
 
-console.log(year + "-" + month + "-" + day + " " + addZero(hours) + ":" + minutes + ":" + seconds);
-const timeText = '' + addZero(hours) + ":" + minutes
+console.log(year + "-" + month + "-" + day + " " + addZero(hours) + ":" + addZero(minutes) + ":" + seconds);
+const timeText = '' + addZero(hours) + ":" + addZero(minutes)
 log(timeText)
  let co2 = resAir.body.devices[0].dashboard_data.CO2;
  log(co2)
