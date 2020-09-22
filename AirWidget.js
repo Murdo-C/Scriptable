@@ -1,12 +1,15 @@
+// Get the below details by making an account at dev.netatmo.com
+
 let clientId = "XXXXXXXXX"
 let clientSecret = "XXXXXXXXX"
 let username = "XXXXXXXXX"
 let password = "XXXXXXXXX"
 let homeId = "XXXXXXXXX"
 let roomId = "XXXXXXXXX"
+let macId = "XX:XX:XX:XX:XX:XX"
 let scope = "read_homecoach"
 
- // import this script                    
+ // copy BetterRequest from https://gist.github.com/schl3ck/2009e6915d10036a916a1040cbb680ac and save as a module in Scriptable called BetterRequest
  let BetterRequest = importModule("BetterRequest"); 
                                           
  // use it                                
@@ -25,13 +28,12 @@ let scope = "read_homecoach"
 let accessToken = res['access_token'];
 // QuickLook.present(accessToken)
 
-// Insert device_id where XXXXXXXXX is
- let reqAir = new BetterRequest("https://api.netatmo.com/api/gethomecoachsdata?device_id=XXXXXXXXX"); 
+ let reqAir = new BetterRequest("https://api.netatmo.com/api/gethomecoachsdata?device_id=" + encodeURIComponent(macId)); 
  reqAir.method = "get";                     
  reqAir.headers = { "Authorization": "Bearer " + accessToken};      
  log(reqAir.headers)                                 
  let resAir = await reqAir.loadJSON(); 
- // QuickLook.present(resAir)
+//  QuickLook.present(resAir)
  let time = resAir.body.devices[0].dashboard_data.time_utc;
  log(time)
 
@@ -44,13 +46,16 @@ var hours = date.getHours();
 var minutes = date.getMinutes();
 var seconds = date.getSeconds();
 
-console.log(year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds);
-const timeText = '@ ' + hours + ":" + minutes
+console.log(year + "-" + month + "-" + day + " " + addZero(hours) + ":" + minutes + ":" + seconds);
+const timeText = '' + addZero(hours) + ":" + minutes
 log(timeText)
  let co2 = resAir.body.devices[0].dashboard_data.CO2;
  log(co2)
-const co2Text = 'Air quality: ' + co2
+const co2Text = co2 + ' ppm'
 log(co2Text)
+ let humidity = resAir.body.devices[0].dashboard_data.Humidity;
+const humidText = humidity + "%"
+ log(humidText)
 
 let widget = createWidget();
 
@@ -59,7 +64,6 @@ if (config.runsInWidget) {
     Script.setWidget(widget);
     Script.complete();
 }
-
 
 function createWidget(item) {
   const textColor = new Color("#ffffff")
@@ -71,18 +75,51 @@ function createWidget(item) {
   w.backgroundGradient = gradient
   w.setPadding(10, 20, 10, 20)
   
+  let header = w.addText("Indoor air")
+  header.applyBodyTextStyling()
+  header.textColor = textColor
+  header.textSize = 14
+  header.textOpacity = 0.8
+
+  w.addSpacer(7)
+      
   let airTxt = w.addText(co2Text)
   airTxt.applyHeadlineTextStyling()
   airTxt.textColor = textColor
-  airTxt.lineLimit = 2
+  let airTxtSub = w.addText("CO2")
+  airTxtSub.applyBodyTextStyling()
+  airTxtSub.textColor = textColor
+  airTxtSub.textOpacity = 0.8
+  airTxtSub.textSize = 12
+
+  w.addSpacer(7)
+  
+  let humidTxt = w.addText(humidText)
+  humidTxt.applyHeadlineTextStyling()
+  humidTxt.textColor = textColor
+  let humidTxtSub = w.addText("Humidity")
+  humidTxtSub.applyBodyTextStyling()
+  humidTxtSub.textColor = textColor
+  humidTxtSub.textOpacity = 0.8
+  humidTxtSub.textSize = 12
 
   w.addSpacer(7)
   
   let timeTxt = w.addText(timeText)
+  timeTxt.rightAlignText()
   timeTxt.applyBodyTextStyling()
   timeTxt.textColor = textColor
   timeTxt.textOpacity = 0.8
   timeTxt.textSize = 12
+
+//   w.url = "netatmoenergy://"
   
   return w
+}
+
+function addZero(i) {
+  if (i < 10) {
+    i = "0" + i;
+  }
+  return i;
 }
