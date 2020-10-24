@@ -75,8 +75,7 @@ async function createWidget(items) {
   
   list.addSpacer()
   
-  if(tday__NEW_CASES = "TBC"){  
-    const mainContent = list.addStack()
+  const mainContent = list.addStack()
     mainContent.layoutHorizontally()
     mainContent.useDefaultPadding()
     mainContent.centerAlignContent()
@@ -87,14 +86,7 @@ async function createWidget(items) {
   const ydayLabel = mainContent.addText("("+yday__NEW_CASES+")")
   ydayLabel.font = Font.systemFont(14)
   ydayLabel.textColor = Color.gray()
-  
-} else {
 
-  const incidenceLabel = list.addText(tday__NEW_CASES)
-  incidenceLabel.font = Font.boldSystemFont(24)
-  incidenceLabel.textColor = Color.green()
-  
-}
   const totalCasesLabel = list.addText(tday__CUM_CASES + " total")
   totalCasesLabel.font = Font.boldSystemFont(16)
   
