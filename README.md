@@ -1,7 +1,7 @@
 # Scriptable
 My scriptable snippets
 
-# [Netatmo home status](/HomeWidget.js0
+# [Netatmo home status](/HomeWidget.js)
 
 ![](/Images/photo.jpeg)
 
