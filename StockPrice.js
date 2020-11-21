@@ -36,20 +36,47 @@ async function createWidget(api) {
   let redColor = new Color("EB5494")
   let greenColor = new Color("75FBDE")
 
-  for(j=0; j<8; j++)
+var numStocks = stocksInfo.length
+let stackHolder
+let curStack
+let st1,st2
+let mainStack = widget.addStack()
+let currentStock
+  for(j=0; j<numStocks; j++)
   {
-   
-    let currentStock = stocksInfo[j];
-    let nextStock = stocksInfo[j+1];
-    let row1 = widget.addStack();
+    if (j<numStocks)currentStock = stocksInfo[j];
+//     let nextStock = stocksInfo[j+1];
+    if ((j)%8==0){
+//      if (!st1){ 
+      stackHolder = mainStack.addStack()
+      mainStack.addSpacer()
+//       stackHolder=st1
+//       }
+    }
+    
+//   else if ((1+j)/8 > 1 && (1+j)/8 <=16) {
+//     if (!st2){
+//       mainStack.addSpacer(2)
+//       st2 = mainStack.addStack()
+//       stackHolder=st2
+//       }
+// 
+//     }
+    
+    curStack = stackHolder
+    
+//     widget.addStack();
+    
+    
     // Add Stock Symbol
-    let stockSymbol = row1.addText(currentStock.symbol);
+    let aStack = curStack.addStack()
+    let stockSymbol = aStack.addText(currentStock.symbol);
     stockSymbol.textColor = Color.white();
     stockSymbol.font = Font.boldMonospacedSystemFont(12);
    
     //Add Today's change in price
-    row1.addSpacer();
-    let changeValue = row1.addText(currentStock.changepercent+"%");
+    aStack.addSpacer();
+    let changeValue = aStack.addText(currentStock.changepercent+"%");
     if(currentStock.changepercent < 0) {
       changeValue.textColor = redColor;
     } else {
@@ -58,21 +85,27 @@ async function createWidget(api) {
     changeValue.font = Font.boldMonospacedSystemFont(12);
     
     // Add Ticker icon
-    row1.addSpacer(2);
+    aStack.addSpacer(1);
     let ticker = null;
     if(currentStock.changevalue < 0){
-      ticker = row1.addImage(downticker.image);
+      ticker = aStack.addImage(downticker.image);
       ticker.tintColor = redColor;
     } else {
-      ticker = row1.addImage(upticker.image);
+      ticker = aStack.addImage(upticker.image);
       ticker.tintColor = greenColor;
     }
        
     ticker.imageSize = new Size(8,8);
+    aStack.layoutHorizontally()
+//     curStack.layoutHorizontally()
+    if (j%8==0){
+    curStack.layoutVertically()
+    }
    
-    widget.addSpacer(2);
+//     mainStack.addSpacer(2);
    
   }
+  mainStack.layoutHorizontally()
   return widget
 }
 
@@ -81,7 +114,7 @@ async function getStockData() {
 // Read from WidgetParameter if present or use hardcoded values
 // Provide values in Widget Parameter as comma seperated list  
   if(args.widgetParameter == null) {
-    stocks = ["SNAP", "PTON", "ZM", "TSLA", "AAPL", "ETSY", "CVNA", "DOCU", "SHOP", "SQ", "FSLY", "GOOGL", "NFLX", "AMZN", "SPOT", "IPOC"];
+    stocks = ["SNAP", "PTON", "ZM", "TSLA", "AAPL", "ETSY", "CVNA", "DOCU", "SHOP", "SQ", "FSLY", "GOOGL", "NFLX", "AMZN", "SPOT", "IPOC","T","F"];
   } else {
     stocks = args.widgetParameter.split(",");
   }
